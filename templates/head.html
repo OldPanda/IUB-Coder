@@ -1,0 +1,35 @@
+{% block header %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand hidden-sm" href="/">IUB Coder</a>
+            </div>
+            <div class="navbar-collapse collapse" role="navigation">
+                
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not cookieName %}
+                    <li>
+                        <a href="/login">登录</a>
+                    </li>
+                    <li>
+                        <a href="/signup">注册</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="/">欢迎：{{ cookieName }}</a>
+                    </li>
+                    <li>
+                        <a href="/logout">退出</a>
+                    </li>
+                    {% end %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% end %}
