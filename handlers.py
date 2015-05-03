@@ -18,9 +18,9 @@ class IndexHandler(tornado.web.RequestHandler):
         cookie_id = self.get_cookie("CoderID")
         username = get_name(cookie_id)
         self.render("index.html",
-                        cookieName=username,
-                        notice=False,
-                        notice_msg="")
+                    cookieName=username,
+                    notice=False,
+                    notice_msg="")
 
 
 class AboutHandler(tornado.web.RequestHandler):
