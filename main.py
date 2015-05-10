@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.options
 
 import os.path
+import os
 import sys
 from handlers import *
 
@@ -40,6 +41,7 @@ class Application(tornado.web.Application):
 def main():
     reload(sys)
     sys.setdefaultencoding("utf-8")
+    os.environ['TZ'] = 'US/Eastern'  # set time zone to estern time
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)
