@@ -23,6 +23,7 @@ class Application(tornado.web.Application):
             (r"/logout", LogoutHandler),
             (r"/sendMail", SendMailHandler),
             (r"/verify", VerifyHandler),
+            (r"/newpost", NewPostHandler),
             (r"/error", NotFoundHandler),
             (r".*", NotFoundHandler)
         ]

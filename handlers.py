@@ -5,6 +5,7 @@ import hashlib
 import uuid
 import time
 import random
+import math
 
 from db_operations import *
 from send_mail import *
@@ -15,12 +16,18 @@ class IndexHandler(tornado.web.RequestHandler):
     Show main page
     '''
     def get(self):
+        cur_page = self.get_argument("page", 1)
         cookie_id = self.get_cookie("CoderID")
         username = get_name(cookie_id)
+        posts = fetch_all_posts()
+        page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
         self.render("index.html",
                     cookieName=username,
                     notice=False,
-                    notice_msg="")
+                    notice_msg="",
+                    posts=posts,
+                    curPage=cur_page,
+                    pageNum=page_num)
 
 
 class AboutHandler(tornado.web.RequestHandler):
@@ -117,10 +124,10 @@ class LoginHandler(tornado.web.RequestHandler):
         verified = is_verified(cookie_id)  # check if account verified
         self.set_cookie("CoderID", cookie_id)  # set cookie when logging in
         if not verified:
-            self.render("index.html",
-                        cookieName=None,
-                        notice=True,
-                        notice_msg="用户未验证")
+            error_msg = "用户未验证"
+            self.render("login.html",
+                        error=True,
+                        error_msg=error_msg)
         else:
             self.redirect("/")
 
@@ -159,16 +166,57 @@ class VerifyHandler(tornado.web.RequestHandler):
         email = self.get_argument("email")
         verify_code = self.get_argument("code")
         verify_res, msg = verify_account(email, verify_code)
+
         if verify_res:
-            self.render("index.html",
-                        cookieName=None,
-                        notice=True,
-                        notice_msg="验证成功")
-        else:
-            self.render("index.html",
-                        cookieName=None,
-                        notice=True,
-                        notice_msg="验证失败，"+msg)
+            user = get_user_given_email(email)
+            self.set_cookie("CoderID", user["cookie"])
+            self.redirect("/")
+        # need to implement 'else', which represents verification fails. 
+
+
+class NewPostHandler(tornado.web.RequestHandler):
+    '''
+    New post
+    '''
+    def get(self):
+        cookie_id = self.get_cookie("CoderID")
+        username = get_name(cookie_id)
+        self.render("newpost.html",
+                    cookieName=username, 
+                    notice=None)
+
+    def post(self):
+        cookie_id = self.get_cookie("CoderID")
+        username = get_name(cookie_id)
+        if not username:
+            # if there's no user log in
+            notice = True
+            notice_msg = "先登录，后发帖"
+            self.render("newpost.html", 
+                        cookieName=username, 
+                        notice=notice, 
+                        notice_msg=notice_msg)
+            return
+        title = self.get_argument("title")
+        content = self.get_argument("content")
+        if len(title) == 0:
+            # if there's no title
+            notice = True
+            notice_msg = "标题不得为空"
+            self.render("newpost.html", 
+                        cookieName=username, 
+                        notice=notice, 
+                        notice_msg=notice_msg)
+            return
+        author = username  # author
+        post_time = time.ctime()  # post time
+        insert_post(title, content, author, post_time)
+        self.redirect("/")
+
+
+class PostHandler(tornado.web.RequestHandler):
+    def get(self):
+        pass
 
 
 class NotFoundHandler(tornado.web.RequestHandler):

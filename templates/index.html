@@ -2,12 +2,65 @@
 {% include "head.html" %}
 
 {% block body %}
-<h1>Welcome! </h1>
-{% if notice %}
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        {{ notice_msg }}
+<div class="container">
+    {% if notice %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ notice_msg }}
+        </div>
+    {% end %}
+    <div class="row">
+        <div class="col-md-7">
+            <div style="text-align:right;">
+                <a href="/newpost" class="btn btn-success">发 帖</a>
+            </div>
+            <hr/>
+            <ul>
+                <!-- 20 posts per page -->
+                {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
+                    <li>
+                        <a href="/">{{ post["title"] }}</a>
+                        <p>Posted on <i>{{ post["post_time"] }}</i> by {{ post["author"] }}</p>
+                        <hr/>
+                    </li>
+                {% end %}
+            </ul>
+            <div style="text-align:center;">
+                <ul class="pagination">
+                    <!-- previous -->
+                    {% if int(curPage) == 1 %}
+                        <li class="disabled">
+                            <a href="/?page={{ int(curPage) }}">&laquo;</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="/?page={{ int(curPage)-1 }}">&laquo;</a>
+                        </li>
+                    {% end %}
+                    <!-- page numbers -->
+                    {% for i in xrange(int(pageNum)) %}
+                        <li {% if i+1 == int(curPage) %}class="active"{% end %}>
+                            <a href="/?page={{ i+1 }}">{{ i+1 }}</a>
+                        </li>
+                    {% end %}
+                    <!-- next -->
+                    {% if int(curPage) == int(pageNum) %}
+                        <li class="disabled">
+                            <a href="/?page={{ int(curPage) }}">&raquo;</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="/?page={{ int(curPage)+1 }}">&raquo;</a>
+                        </li>
+                    {% end %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="well well-lg">
+                <p>还不知道放啥</p>
+            </div>
+        </div>
     </div>
-{% end %}
-
+</div>
 {% end %}

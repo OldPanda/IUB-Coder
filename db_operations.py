@@ -58,7 +58,10 @@ def insert_user(username, password, salt, email):
         "salt": salt,
         "verified": False,
         "verify_code": md5code,
-        "cookie": cookie
+        "cookie": cookie,
+        "user_info": {},
+        "posts": [],
+        "comments": {}
         }
     print new_user
     # insert new user
@@ -125,3 +128,30 @@ def verify_account(email, verify_code):
             return False, "验证码不正确"
     else:
         return False, "用户不存在"
+
+
+def insert_post(title, content, author, post_time):
+    '''
+    Insert a new post, and update user's 'posts'.
+    '''
+    post_db = conn["posts"]
+    user_db = conn["users"]  # also need to update user
+    post_id = post_db.insert({
+        "title": title,
+        "content": content,
+        "author": author,
+        "post_time": post_time,
+        "comments": {}
+        })
+    user = user_db.find_one({"username": author})
+    user["posts"].append(post_id)
+    user_db.save(user)
+
+
+def fetch_all_posts():
+    '''
+    Get all posts from database
+    '''
+    post_db = conn["posts"]
+    all_posts = post_db.find()
+    return sorted(all_posts, key=lambda x:x["post_time"], reverse=True)

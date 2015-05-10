@@ -9,7 +9,7 @@ from EMAIL_CONFIGURE import *
 
 
 def send_verify_mail(username, email, verify_code):
-    verify_link = "http://iubcoder.herokuapp.com//verify?email=" + \
+    verify_link = "http://iubcoder.herokuapp.com/verify?email=" + \
                   email + \
                   "&code=" + \
                   verify_code
