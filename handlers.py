@@ -33,6 +33,9 @@ class IndexHandler(tornado.web.RequestHandler):
         username = get_name(cookie_id)
         posts = fetch_all_posts()
         page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
+        if cur_page > page_num:
+            self.redirect("/error")
+            return
         self.render("index.html",
                     cookieName=username,
                     notice=False,
@@ -234,6 +237,9 @@ class ShowPostHandler(tornado.web.RequestHandler):
         cookie_id = self.get_cookie("CoderID")
         username = get_name(cookie_id)
         post = fetch_post_by_num(post_num)
+        if not post:
+            self.redirect("/error")
+            return
         content = markdown2.markdown(post["content"])
         self.render("post.html",
                     cookieName=username,
