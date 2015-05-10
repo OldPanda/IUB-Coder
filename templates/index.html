@@ -10,7 +10,7 @@
         </div>
     {% end %}
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div style="text-align:right;">
                 <a href="/newpost" class="btn btn-success">发 帖</a>
             </div>
@@ -19,8 +19,9 @@
                 <!-- 20 posts per page -->
                 {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
                     <li>
-                        <a href="/">{{ post["title"] }}</a>
-                        <p>Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</p>
+                        <a href="/post/{{ post['post_num'] }}">{{ post["title"] }}</a>
+                        <br>
+                        <span style="text-align:right;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</span>
                         <hr/>
                     </li>
                 {% end %}
@@ -28,35 +29,35 @@
             <div style="text-align:center;">
                 <ul class="pagination">
                     <!-- previous -->
-                    {% if int(curPage) == 1 %}
+                    {% if int(curPage) <= 1 %}
                         <li class="disabled">
-                            <a href="/?page={{ int(curPage) }}">&laquo;</a>
+                            <a href="/page/{{ int(curPage) }}">&laquo;</a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="/?page={{ int(curPage)-1 }}">&laquo;</a>
+                            <a href="/page/{{ int(curPage)-1 }}">&laquo;</a>
                         </li>
                     {% end %}
                     <!-- page numbers -->
                     {% for i in xrange(int(pageNum)) %}
                         <li {% if i+1 == int(curPage) %}class="active"{% end %}>
-                            <a href="/?page={{ i+1 }}">{{ i+1 }}</a>
+                            <a href="/page/{{ i+1 }}">{{ i+1 }}</a>
                         </li>
                     {% end %}
                     <!-- next -->
-                    {% if int(curPage) == int(pageNum) %}
+                    {% if int(curPage) >= int(pageNum) %}
                         <li class="disabled">
-                            <a href="/?page={{ int(curPage) }}">&raquo;</a>
+                            <a href="/page/{{ int(curPage) }}">&raquo;</a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="/?page={{ int(curPage)+1 }}">&raquo;</a>
+                            <a href="/page/{{ int(curPage)+1 }}">&raquo;</a>
                         </li>
                     {% end %}
                 </ul>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="well well-lg">
                 <p>还不知道放啥</p>
             </div>

@@ -17,7 +17,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         self.db = conn["iub_test"]
         handlers = [
-            (r"/", IndexHandler),
+            (r"/", MainPageHandler),
+            (r"/page/(\w+)", IndexHandler),
             (r"/about", AboutHandler),
             (r"/signup", RegisterHandler),
             (r"/login", LoginHandler),
@@ -25,6 +26,7 @@ class Application(tornado.web.Application):
             (r"/sendMail", SendMailHandler),
             (r"/verify", VerifyHandler),
             (r"/newpost", NewPostHandler),
+            (r"/post/(\d+)", ShowPostHandler),
             (r"/error", NotFoundHandler),
             (r".*", NotFoundHandler)
         ]

@@ -6,17 +6,29 @@ import uuid
 import time
 import random
 import math
+import markdown2
 
 from db_operations import *
 from send_mail import *
+
+
+class MainPageHandler(tornado.web.RequestHandler):
+    '''
+    Redirect to the first page
+    '''
+    def get(self):
+        self.redirect("/page/1")
 
 
 class IndexHandler(tornado.web.RequestHandler):
     '''
     Show main page
     '''
-    def get(self):
-        cur_page = self.get_argument("page", 1)
+    def get(self, cur_page):
+        try:
+            cur_page = int(cur_page)
+        except:
+            self.redirect("/error")
         cookie_id = self.get_cookie("CoderID")
         username = get_name(cookie_id)
         posts = fetch_all_posts()
@@ -192,7 +204,7 @@ class NewPostHandler(tornado.web.RequestHandler):
             # if there's no user log in
             notice = True
             notice_msg = "先登录，后发帖"
-            self.render("newpost.html", 
+            self.render("newPost.html", 
                         cookieName=username, 
                         notice=notice, 
                         notice_msg=notice_msg)
@@ -203,7 +215,7 @@ class NewPostHandler(tornado.web.RequestHandler):
             # if there's no title
             notice = True
             notice_msg = "标题不得为空"
-            self.render("newpost.html", 
+            self.render("newPost.html", 
                         cookieName=username, 
                         notice=notice, 
                         notice_msg=notice_msg)
@@ -214,9 +226,19 @@ class NewPostHandler(tornado.web.RequestHandler):
         self.redirect("/")
 
 
-class PostHandler(tornado.web.RequestHandler):
-    def get(self):
-        pass
+class ShowPostHandler(tornado.web.RequestHandler):
+    '''
+    Show post
+    '''
+    def get(self, post_num):
+        cookie_id = self.get_cookie("CoderID")
+        username = get_name(cookie_id)
+        post = fetch_post_by_num(post_num)
+        content = markdown2.markdown(post["content"])
+        self.render("post.html",
+                    cookieName=username,
+                    post=post,
+                    content=content)
 
 
 class NotFoundHandler(tornado.web.RequestHandler):

@@ -136,7 +136,9 @@ def insert_post(title, content, author, post_time):
     '''
     post_db = conn["posts"]
     user_db = conn["users"]  # also need to update user
+    post_num = fetch_posts_num() + 1
     post_id = post_db.insert({
+        "post_num": post_num,
         "title": title,
         "content": content,
         "author": author,
@@ -155,3 +157,20 @@ def fetch_all_posts():
     post_db = conn["posts"]
     all_posts = post_db.find()
     return sorted(all_posts, key=lambda x:x["post_time"], reverse=True)
+
+
+def fetch_posts_num():
+    '''
+    Check how many posts are in database
+    '''
+    post_db = conn["posts"]
+    return post_db.find().count()
+
+
+def fetch_post_by_num(post_num):
+    '''
+    Return post according to given number
+    '''
+    post_db = conn["posts"]
+    post = post_db.find_one({"post_num": int(post_num)})
+    return post

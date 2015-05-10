@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+{% include "head.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="page-header">
+                <h2>{{ post["title"] }}</h2>
+            </div>
+            <span style="text-align:left;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</span>
+            <p>{% raw content %}</p>
+            <hr/>
+        </div>
+        <div class="col-md-4">
+            <div class="well well-lg">
+                <p>还不知道放啥</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
