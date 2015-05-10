@@ -20,7 +20,7 @@
                 {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
                     <li>
                         <a href="/">{{ post["title"] }}</a>
-                        <p>Posted on <i>{{ post["post_time"] }}</i> by {{ post["author"] }}</p>
+                        <p>Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</p>
                         <hr/>
                     </li>
                 {% end %}
