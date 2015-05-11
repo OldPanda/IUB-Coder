@@ -61,7 +61,7 @@ def insert_user(username, password, salt, email):
         "cookie": cookie,
         "user_info": {},
         "posts": [],
-        "comments": {}
+        "comments": []
         }
     print new_user
     # insert new user
@@ -78,7 +78,7 @@ def is_verified(cookie):
     return user["verified"]
 
 
-def get_name(cookie):
+def get_name_by_cookie(cookie):
     '''
     Return user name of the given user_id.
     '''
@@ -93,7 +93,7 @@ def get_name(cookie):
         return None
 
 
-def get_user_given_username(username):
+def get_user_by_username(username):
     '''
     Check if user exists
     '''
@@ -143,8 +143,10 @@ def insert_post(title, content, author, post_time):
         "content": content,
         "author": author,
         "post_time": post_time,
-        "comments": {}
+        "last_modified": post_time,
+        "comments": []
         })
+    # update user's post
     user = user_db.find_one({"username": author})
     user["posts"].append(post_id)
     user_db.save(user)
@@ -156,7 +158,7 @@ def fetch_all_posts():
     '''
     post_db = conn["posts"]
     all_posts = post_db.find()
-    return sorted(all_posts, key=lambda x:x["post_time"], reverse=True)
+    return sorted(all_posts, key=lambda x:x["last_modified"], reverse=True)
 
 
 def fetch_posts_num():
@@ -174,3 +176,28 @@ def fetch_post_by_num(post_num):
     post_db = conn["posts"]
     post = post_db.find_one({"post_num": int(post_num)})
     return post
+
+
+def insert_comment(post, username, content):
+    '''
+    Insert a comment into a post
+    '''
+    post_db = conn["posts"]
+    comment_time = time.ctime()
+    post["comments"].append({
+        "content": content,
+        "post_time": comment_time,
+        "author": username
+        })
+    post["last_modified"] = comment_time
+    post_db.save(post)
+    # update user's comment
+    user_db = conn["users"]
+    user = get_user_by_username(username)
+    user["comments"].append({
+        "post_num": post["post_num"],
+        "content": content,
+        "last_modified": comment_time
+        })
+    user_db.save(user)
+    pass

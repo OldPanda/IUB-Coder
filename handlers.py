@@ -6,10 +6,10 @@ import uuid
 import time
 import random
 import math
-import markdown2
 
 from db_operations import *
 from send_mail import *
+from markdown_gen import *
 
 
 class MainPageHandler(tornado.web.RequestHandler):
@@ -30,7 +30,7 @@ class IndexHandler(tornado.web.RequestHandler):
         except:
             self.redirect("/error")
         cookie_id = self.get_cookie("CoderID")
-        username = get_name(cookie_id)
+        username = get_name_by_cookie(cookie_id)
         posts = fetch_all_posts()
         page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
         if cur_page > page_num:
@@ -51,7 +51,7 @@ class AboutHandler(tornado.web.RequestHandler):
     '''
     def get(self):
         cookie_id = self.get_cookie("CoderID")
-        username = get_name(cookie_id)
+        username = get_name_by_cookie(cookie_id)
         self.render("about.html",
                     cookieName=username)
 
@@ -124,7 +124,7 @@ class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         username = self.get_argument("username")
         password = self.get_argument("password")
-        user = get_user_given_username(username)
+        user = get_user_by_username(username)
         if not user:
             error_msg = "用户不存在"
             self.render("login.html", error=True, error_msg=error_msg)
@@ -195,14 +195,14 @@ class NewPostHandler(tornado.web.RequestHandler):
     '''
     def get(self):
         cookie_id = self.get_cookie("CoderID")
-        username = get_name(cookie_id)
+        username = get_name_by_cookie(cookie_id)
         self.render("newpost.html",
                     cookieName=username, 
                     notice=None)
 
     def post(self):
         cookie_id = self.get_cookie("CoderID")
-        username = get_name(cookie_id)
+        username = get_name_by_cookie(cookie_id)
         if not username:
             # if there's no user log in
             notice = True
@@ -235,16 +235,49 @@ class ShowPostHandler(tornado.web.RequestHandler):
     '''
     def get(self, post_num):
         cookie_id = self.get_cookie("CoderID")
-        username = get_name(cookie_id)
+        username = get_name_by_cookie(cookie_id)
         post = fetch_post_by_num(post_num)
         if not post:
             self.redirect("/error")
             return
-        content = markdown2.markdown(post["content"])
+        content = md_translate(post["content"])
         self.render("post.html",
                     cookieName=username,
+                    notice=False,
                     post=post,
-                    content=content)
+                    content=content,
+                    translate=md_translate)
+
+    def post(self, post_num):
+        cookie_id = self.get_cookie("CoderID")
+        username = get_name_by_cookie(cookie_id)
+        post = fetch_post_by_num(post_num)
+        if not username:
+            self.render("post.html",
+                        cookieName=username,
+                        notice=True,
+                        notice_msg="先登录，后跟帖",
+                        post=post,
+                        content=md_translate(post["content"]),
+                        translate=md_translate)
+            return
+        content = self.get_argument("commentContent")
+        if len(content) == 0:
+            self.render("post.html",
+                        cookieName=username,
+                        notice=True,
+                        notice_msg="跟帖内容不得为空",
+                        post=post,
+                        content=md_translate(post["content"]),
+                        translate=md_translate)
+            return
+        insert_comment(post, username, content)
+        self.render("post.html",
+                    cookieName=username,
+                    notice=False,
+                    post=post,
+                    content=md_translate(post["content"]),
+                    translate=md_translate)
 
 
 class NotFoundHandler(tornado.web.RequestHandler):
@@ -252,4 +285,6 @@ class NotFoundHandler(tornado.web.RequestHandler):
     404.html
     '''
     def get(self):
-        self.render("404.html", cookieName=False)
+        cookie_id = self.get_cookie("CoderID")
+        username = get_name_by_cookie(cookie_id)
+        self.render("404.html", cookieName=username)

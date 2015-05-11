@@ -19,9 +19,10 @@
                 <!-- 20 posts per page -->
                 {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
                     <li>
-                        <a href="/post/{{ post['post_num'] }}">{{ post["title"] }}</a>
+                        <a href="/post/{{ post['post_num'] }}"><h4>{{ post["title"] }}</h4></a>
+                        <p style="text-align:right;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}
                         <br>
-                        <span style="text-align:right;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</span>
+                        Last modified on <i>{{ post["last_modified"] }}(EST)</i></p>
                         <hr/>
                     </li>
                 {% end %}

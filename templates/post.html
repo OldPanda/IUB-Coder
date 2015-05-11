@@ -1,8 +1,31 @@
 {% extends "template.html" %}
 {% include "head.html" %}
 
+{% block css %}
+<!--
+Comes from http://www.codingdrama.com/bootstrap-markdown/
+-->
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-markdown.min.css" />
+{% end %}
+
+{% block js %}
+<!--
+Comes from http://www.codingdrama.com/bootstrap-markdown/
+-->
+<script type="text/javascript" src="/static/js/markdown.js"></script>
+<script type="text/javascript" src="/static/js/to-markdown.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-markdown.zh.js"></script>
+{% end %}
+
 {% block body %}
 <div class="container">
+    {% if notice %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ notice_msg }}
+        </div>
+    {% end %}
     <div class="row">
         <div class="col-md-8">
             <div class="page-header">
@@ -13,6 +36,25 @@
             <!-- Go to www.addthis.com/dashboard to customize your tools -->
             <div class="addthis_sharing_toolbox"></div>
             <hr/>
+            <!-- Comments -->
+            <h4><b>回复</b></h4>
+            <ul>
+                {% for comment in post["comments"] %}
+                    <li>
+                        <p>{% raw translate(comment["content"]) %}</p>
+                        <span style="text-align:left;">Posted on <i>{{ comment["post_time"] }}(EST)</i> by {{ comment["author"] }}</span>
+                        <hr/>
+                    </li>
+                {% end %}
+            </ul>
+            <!-- Write comments -->
+            <form action="/post/{{ post['post_num'] }}" method="post" accept-charset="utf-8">
+                <textarea name="commentContent" data-provide="markdown" rows="5" placeholder="在此输入你的内容"></textarea>
+                <hr/>
+                <div style="text-align:center;">
+                    <button type="submit" class="btn btn-primary">发表回复</button>
+                </div>
+            </form>
         </div>
         <div class="col-md-4">
             <div class="well well-lg">
