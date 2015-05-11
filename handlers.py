@@ -196,7 +196,7 @@ class NewPostHandler(tornado.web.RequestHandler):
     def get(self):
         cookie_id = self.get_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
-        self.render("newpost.html",
+        self.render("newPost.html",
                     cookieName=username, 
                     notice=None)
 
