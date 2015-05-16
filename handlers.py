@@ -9,7 +9,8 @@ import math
 
 from db_operations import *
 from send_mail import *
-from markdown_gen import *
+import markdown_gen
+import send_mail
 
 
 class MainPageHandler(tornado.web.RequestHandler):
@@ -29,7 +30,7 @@ class IndexHandler(tornado.web.RequestHandler):
             cur_page = int(cur_page)
         except:
             self.redirect("/error")
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         posts = fetch_all_posts()
         page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
@@ -50,7 +51,7 @@ class AboutHandler(tornado.web.RequestHandler):
     Show about page
     '''
     def get(self):
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         self.render("about.html",
                     cookieName=username)
@@ -137,7 +138,8 @@ class LoginHandler(tornado.web.RequestHandler):
             return
         cookie_id = user["cookie"]
         verified = is_verified(cookie_id)  # check if account verified
-        self.set_cookie("CoderID", cookie_id)  # set cookie when logging in
+        # set cookie when logging in, and expires in 15 mins
+        self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
         if not verified:
             error_msg = "用户未验证"
             self.render("login.html",
@@ -166,10 +168,10 @@ class SendMailHandler(tornado.web.RequestHandler):
         user = get_user_given_email(email)
         if user["verified"]:
             cookie_id = user["cookie"]
-            self.set_cookie("CoderID", cookie_id)
+            self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
             self.redirect("/")
         else:
-            send_verify_mail(user["username"], email, user["verify_code"])
+            send_mail.send_verify_mail(user["username"], email, user["verify_code"])
             self.render("sendMail.html", cookieName=None)
 
 
@@ -184,7 +186,7 @@ class VerifyHandler(tornado.web.RequestHandler):
 
         if verify_res:
             user = get_user_given_email(email)
-            self.set_cookie("CoderID", user["cookie"])
+            self.set_secure_cookie("CoderID", user["cookie"], expires=time.time()+900)
             self.redirect("/")
         # need to implement 'else', which represents verification fails. 
 
@@ -194,14 +196,14 @@ class NewPostHandler(tornado.web.RequestHandler):
     New post
     '''
     def get(self):
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         self.render("newPost.html",
                     cookieName=username, 
                     notice=None)
 
     def post(self):
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         if not username:
             # if there's no user log in
@@ -234,50 +236,53 @@ class ShowPostHandler(tornado.web.RequestHandler):
     Show post
     '''
     def get(self, post_num):
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         post = fetch_post_by_num(post_num)
         if not post:
             self.redirect("/error")
             return
-        content = md_translate(post["content"])
+        content = markdown_gen.md_translate(post["content"])
         self.render("post.html",
                     cookieName=username,
                     notice=False,
                     post=post,
                     content=content,
-                    translate=md_translate)
+                    translate=markdown_gen.md_translate)
 
     def post(self, post_num):
-        cookie_id = self.get_cookie("CoderID")
+        # write comment
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         post = fetch_post_by_num(post_num)
         if not username:
+            # if not login
             self.render("post.html",
                         cookieName=username,
                         notice=True,
                         notice_msg="先登录，后跟帖",
                         post=post,
-                        content=md_translate(post["content"]),
-                        translate=md_translate)
+                        content=markdown_gen.md_translate(post["content"]),
+                        translate=markdown_gen.md_translate)
             return
         content = self.get_argument("commentContent")
         if len(content) == 0:
+            # content is empty
             self.render("post.html",
                         cookieName=username,
                         notice=True,
                         notice_msg="跟帖内容不得为空",
                         post=post,
-                        content=md_translate(post["content"]),
-                        translate=md_translate)
+                        content=markdown_gen.md_translate(post["content"]),
+                        translate=markdown_gen.md_translate)
             return
         insert_comment(post, username, content)
         self.render("post.html",
                     cookieName=username,
                     notice=False,
                     post=post,
-                    content=md_translate(post["content"]),
-                    translate=md_translate)
+                    content=markdown_gen.md_translate(post["content"]),
+                    translate=markdown_gen.md_translate)
 
 
 class NotFoundHandler(tornado.web.RequestHandler):
@@ -285,6 +290,6 @@ class NotFoundHandler(tornado.web.RequestHandler):
     404.html
     '''
     def get(self):
-        cookie_id = self.get_cookie("CoderID")
+        cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         self.render("404.html", cookieName=username)

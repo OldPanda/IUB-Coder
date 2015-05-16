@@ -49,6 +49,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
             </ul>
             <!-- Write comments -->
             <form action="/post/{{ post['post_num'] }}" method="post" accept-charset="utf-8">
+                {% raw xsrf_form_html() %}
                 <textarea name="commentContent" data-provide="markdown" rows="5" placeholder="在此输入你的内容"></textarea>
                 <hr/>
                 <div style="text-align:center;">

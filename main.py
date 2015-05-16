@@ -35,6 +35,10 @@ class Application(tornado.web.Application):
                 os.path.join(os.path.dirname(__file__), "templates"),
             'static_path':
                 os.path.join(os.path.dirname(__file__), "static"),
+            'cookie_secret':
+                'loNdeMclQFe6rcCXOGXGhpCn1NFxXUaTgDQo7gLsyIY=',
+            'xsrf_cookies':
+                True,
             'debug': True
         }
         tornado.web.Application.__init__(self, handlers, **settings)

@@ -30,6 +30,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
         <h3>发表新帖</h3>
         <hr/>
         <form action="/newpost" method="post" accept-charset="utf-8">
+            {% raw xsrf_form_html() %}
             <div class="form-group">
                 <input class="form-control" name="title" type="text" placeholder="标题" />
             </div>

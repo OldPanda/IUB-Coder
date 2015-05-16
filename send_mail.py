@@ -13,16 +13,17 @@ def send_verify_mail(username, email, verify_code):
                   email + \
                   "&code=" + \
                   verify_code
-    content = "你好 " + username + "，" + \
+    content = \
         """
+        你好 {username}，
 
-            欢迎加入IUB Coder，请通过以下链接完成注册。
+        欢迎加入IUB Coder，请通过以下链接完成注册。
 
-        """
-    content += verify_link
-    content += "\n------------------------------------"
-    content += "\nIUB Coder\n"
-    # msg = MIMEText(content)
+        {link}
+
+        ------------------------------------
+        IUB Coder
+        """.format(username=username, link=verify_link)
     msg = MIMEMultipart()
     msg["Subject"] = Header("IUB Coder账号验证", "utf-8")
     msg["From"] = source_email
