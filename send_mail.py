@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 import time
 
-from EMAIL_CONFIGURE import *
+from EMAIL_CONFIGURE import *  # import email address and password
 
 
 def send_verify_mail(username, email, verify_code):
@@ -26,7 +26,7 @@ def send_verify_mail(username, email, verify_code):
         """.format(username=username, link=verify_link)
     msg = MIMEMultipart()
     msg["Subject"] = Header("IUB Coder账号验证", "utf-8")
-    msg["From"] = source_email
+    msg["From"] = source_email  # comes from EMAIL_CONFIGURE
     msg["To"] = email
     text = MIMEText(content, _charset="UTF-8")
     msg.attach(text)

@@ -26,7 +26,8 @@ class Application(tornado.web.Application):
             (r"/sendMail", SendMailHandler),
             (r"/verify", VerifyHandler),
             (r"/newpost", NewPostHandler),
-            (r"/post/(\d+)", ShowPostHandler),
+            (r"/post/(\w+)", ShowPostHandler),
+            (r"/editPost/(\w+)", EditPostHandler),
             (r"/error", NotFoundHandler),
             (r".*", NotFoundHandler)
         ]

@@ -30,6 +30,7 @@ class IndexHandler(tornado.web.RequestHandler):
             cur_page = int(cur_page)
         except:
             self.redirect("/error")
+            return
         cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         posts = fetch_all_posts()
@@ -39,8 +40,6 @@ class IndexHandler(tornado.web.RequestHandler):
             return
         self.render("index.html",
                     cookieName=username,
-                    notice=False,
-                    notice_msg="",
                     posts=posts,
                     curPage=cur_page,
                     pageNum=page_num)
@@ -183,6 +182,7 @@ class VerifyHandler(tornado.web.RequestHandler):
         email = self.get_argument("email")
         verify_code = self.get_argument("code")
         verify_res, msg = verify_account(email, verify_code)
+        print verify_res, msg
 
         if verify_res:
             user = get_user_given_email(email)
@@ -238,7 +238,7 @@ class ShowPostHandler(tornado.web.RequestHandler):
     def get(self, post_num):
         cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
-        post = fetch_post_by_num(post_num)
+        post = fetch_post_by_num(int(post_num))
         if not post:
             self.redirect("/error")
             return
@@ -283,6 +283,44 @@ class ShowPostHandler(tornado.web.RequestHandler):
                     post=post,
                     content=markdown_gen.md_translate(post["content"]),
                     translate=markdown_gen.md_translate)
+
+
+class EditPostHandler(tornado.web.RequestHandler):
+    '''
+    Edit post. 
+    '''
+    def get(self, post_num):
+        cookie_id = self.get_secure_cookie("CoderID")
+        username = get_name_by_cookie(cookie_id)
+        post = fetch_post_by_num(int(post_num))
+        self.render("editPost.html",
+                    cookieName=username,
+                    post=post,
+                    notice=None,
+                    notice_msg="")
+
+    def post(self, post_num):
+        cookie_id = self.get_secure_cookie("CoderID")
+        username = get_name_by_cookie(cookie_id)
+        post = fetch_post_by_num(post_num)
+        title = self.get_argument("title")
+        content = self.get_argument("content")
+        print "asdf"
+        if len(title) == 0:
+            # if there's no title
+            notice = True
+            notice_msg = "标题不得为空"
+            self.render("editPost.html",
+                    cookieName=username,
+                    post=post,
+                    notice=notice,
+                    notice_msg=notice_msg)
+            return
+        post["title"] = title
+        post["content"] = content
+        post["last_modified"] = time.ctime()
+        update_post(post)
+        self.redirect("/post/{}".format(post["post_num"]))
 
 
 class NotFoundHandler(tornado.web.RequestHandler):

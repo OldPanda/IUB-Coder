@@ -1,0 +1,61 @@
+{% extends "template.html" %}
+{% include "head.html" %}
+
+{% block css %}
+<!--
+Comes from http://www.codingdrama.com/bootstrap-markdown/
+-->
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-markdown.min.css" />
+{% end %}
+
+{% block js %}
+<!--
+Comes from http://www.codingdrama.com/bootstrap-markdown/
+-->
+<script type="text/javascript" src="/static/js/markdown.js"></script>
+<script type="text/javascript" src="/static/js/to-markdown.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-markdown.zh.js"></script>
+{% end %}
+
+{% block body %}
+<div class="container">
+    {% if notice %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ notice_msg }}
+        </div>
+    {% end %}
+    <div class="col-md-7">
+        <h3>发表新帖</h3>
+        <hr/>
+        <form action="/editPost/{{ post['post_num'] }}" method="post" accept-charset="utf-8">
+            {% raw xsrf_form_html() %}
+            <div class="form-group">
+                <input class="form-control" name="title" type="text" value="{{ post['title'] }}" />
+            </div>
+            <textarea name="content" data-provide="markdown" rows="20">{{ post['content'] }}</textarea>
+            <hr/>
+            <div style="text-align:center;">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="well well-lg">
+            <h3>格式建议</h3>
+            <ul>
+                <li>
+                    <p>本站支持Markdown语法写作，关于Markdown，可阅读《<a href="http://www.jianshu.com/p/q81RER" target="_blank">献给写作者的 Markdown 新手指南</a>》</p>
+                </li>
+                <li>
+                    <p>暂不支持表格</p>
+                </li>
+                <li>
+                    <p>请预览后再发帖</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% end %}

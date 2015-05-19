@@ -121,6 +121,8 @@ def verify_account(email, verify_code):
     user = user_db.find_one({"email": email})
     if user:
         if user["verify_code"] == verify_code:
+            print user["verify_code"]
+            print verify_code
             user["verified"] = True
             user_db.save(user)
             return True, ""
@@ -182,6 +184,7 @@ def insert_comment(post, username, content):
     '''
     Insert a comment into a post
     '''
+    # update on posts collection
     post_db = conn["posts"]
     comment_time = time.ctime()
     post["comments"].append({
@@ -191,7 +194,7 @@ def insert_comment(post, username, content):
         })
     post["last_modified"] = comment_time
     post_db.save(post)
-    # update user's comment
+    # update on user collection
     user_db = conn["users"]
     user = get_user_by_username(username)
     user["comments"].append({
@@ -200,4 +203,8 @@ def insert_comment(post, username, content):
         "last_modified": comment_time
         })
     user_db.save(user)
-    pass
+
+
+def update_post(post):
+    post_db = conn["posts"]
+    post_db.save(post)
