@@ -14,9 +14,9 @@
                 {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
                     <li>
                         <a href="/post/{{ post['post_num'] }}"><h4>{{ post["title"] }}</h4></a>
-                        <p style="text-align:right;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}
+                        <p style="text-align:right;">发布于<i>{% raw time_to_now(post["post_time"]) %}(EST)</i> by {{ post["author"] }}
                         <br>
-                        Last modified on <i>{{ post["last_modified"] }}(EST)</i></p>
+                        最后更新于<i>{% raw time_to_now(post["last_modified"]) %}(EST)</i></p>
                         <hr/>
                     </li>
                 {% end %}

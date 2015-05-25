@@ -11,6 +11,7 @@ from db_operations import *
 from send_mail import *
 import markdown_gen
 import send_mail
+import time_translate
 
 
 class MainPageHandler(tornado.web.RequestHandler):
@@ -35,14 +36,15 @@ class IndexHandler(tornado.web.RequestHandler):
         username = get_name_by_cookie(cookie_id)
         posts = fetch_all_posts()
         page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
-        if cur_page > page_num:
+        if len(posts) and cur_page > page_num:
             self.redirect("/error")
             return
         self.render("index.html",
                     cookieName=username,
                     posts=posts,
                     curPage=cur_page,
-                    pageNum=page_num)
+                    pageNum=page_num,
+                    time_to_now=time_translate.time_to_now)
 
 
 class AboutHandler(tornado.web.RequestHandler):
@@ -226,7 +228,7 @@ class NewPostHandler(tornado.web.RequestHandler):
                         notice_msg=notice_msg)
             return
         author = username  # author
-        post_time = time.ctime()  # post time
+        post_time = time.time()  # post time
         insert_post(title, content, author, post_time)
         self.redirect("/")
 
@@ -248,7 +250,8 @@ class ShowPostHandler(tornado.web.RequestHandler):
                     notice=False,
                     post=post,
                     content=content,
-                    translate=markdown_gen.md_translate)
+                    translate=markdown_gen.md_translate,
+                    time_to_now=time_translate.time_to_now)
 
     def post(self, post_num):
         # write comment
@@ -263,7 +266,8 @@ class ShowPostHandler(tornado.web.RequestHandler):
                         notice_msg="先登录，后跟帖",
                         post=post,
                         content=markdown_gen.md_translate(post["content"]),
-                        translate=markdown_gen.md_translate)
+                        translate=markdown_gen.md_translate,
+                        time_to_now=time_translate.time_to_now)
             return
         content = self.get_argument("commentContent")
         if len(content) == 0:
@@ -274,7 +278,8 @@ class ShowPostHandler(tornado.web.RequestHandler):
                         notice_msg="跟帖内容不得为空",
                         post=post,
                         content=markdown_gen.md_translate(post["content"]),
-                        translate=markdown_gen.md_translate)
+                        translate=markdown_gen.md_translate,
+                        time_to_now=time_translate.time_to_now)
             return
         insert_comment(post, username, content)
         self.render("post.html",
@@ -282,7 +287,8 @@ class ShowPostHandler(tornado.web.RequestHandler):
                     notice=False,
                     post=post,
                     content=markdown_gen.md_translate(post["content"]),
-                    translate=markdown_gen.md_translate)
+                    translate=markdown_gen.md_translate,
+                    time_to_now=time_translate.time_to_now)
 
 
 class EditPostHandler(tornado.web.RequestHandler):
@@ -318,7 +324,7 @@ class EditPostHandler(tornado.web.RequestHandler):
             return
         post["title"] = title
         post["content"] = content
-        post["last_modified"] = time.ctime()
+        post["last_modified"] = time.time()
         update_post(post)
         self.redirect("/post/{}".format(post["post_num"]))
 

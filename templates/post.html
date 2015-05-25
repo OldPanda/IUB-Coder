@@ -31,7 +31,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
             <div class="page-header">
                 <h2>{{ post["title"] }}</h2>
             </div>
-            <span style="text-align:left;">Posted on <i>{{ post["post_time"] }}(EST)</i> by {{ post["author"] }}</span>
+            <span style="text-align:left;">发布于<i>{% raw time_to_now(post["post_time"]) %}(EST)</i> by {{ post["author"] }}</span>
             {% if post["author"] == cookieName %}
                 <span><a href="/editPost/{{ post['post_num'] }}" style="text-align:right">编辑</a></span>
             {% end %}
@@ -45,7 +45,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
                 {% for comment in post["comments"] %}
                     <li>
                         <p>{% raw translate(comment["content"]) %}</p>
-                        <span style="text-align:left;">Posted on <i>{{ comment["post_time"] }}(EST)</i> by {{ comment["author"] }}</span>
+                        <span style="text-align:left;">回复于<i>{% raw time_to_now(comment["post_time"]) %}(EST)</i> by {{ comment["author"] }}</span>
                         <hr/>
                     </li>
                 {% end %}

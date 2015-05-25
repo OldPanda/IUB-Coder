@@ -6,6 +6,7 @@ import time
 import random
 
 
+# client = pymongo.MongoClient('mongodb://localhost:27017/')
 MONGODB_URI = "mongodb://OldPanda:19900930@ds031832.mongolab.com:31832/iubcoder"
 client = pymongo.MongoClient(MONGODB_URI)  # database connection
 conn = client.get_default_database()
@@ -41,7 +42,7 @@ def insert_user(username, password, salt, email):
     '''
     user_db = conn["users"]  # user database
     # register time
-    reg_time = time.ctime()
+    reg_time = time.time()
     # generate verify code
     code = username + email + str(reg_time)
     m2 = hashlib.md5(code.encode('utf8'))
@@ -186,7 +187,7 @@ def insert_comment(post, username, content):
     '''
     # update on posts collection
     post_db = conn["posts"]
-    comment_time = time.ctime()
+    comment_time = time.time()
     post["comments"].append({
         "content": content,
         "post_time": comment_time,
