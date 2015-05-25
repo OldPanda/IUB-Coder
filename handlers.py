@@ -169,11 +169,19 @@ class SendMailHandler(tornado.web.RequestHandler):
         user = get_user_given_email(email)
         if user["verified"]:
             cookie_id = user["cookie"]
+            # 900 = 60 * 15, 15 minutes
             self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
             self.redirect("/")
         else:
+            fail = self.get_argument("fail", False)  # default is False
             send_mail.send_verify_mail(user["username"], email, user["verify_code"])
-            self.render("sendMail.html", cookieName=None)
+            if fail:
+                msg = "验证失败，已再次发送验证邮件"
+            else:
+                msg = "验证邮件已发送"
+            self.render("sendMail.html",
+                        cookieName=None,
+                        msg=msg)
 
 
 class VerifyHandler(tornado.web.RequestHandler):
@@ -190,7 +198,12 @@ class VerifyHandler(tornado.web.RequestHandler):
             user = get_user_given_email(email)
             self.set_secure_cookie("CoderID", user["cookie"], expires=time.time()+900)
             self.redirect("/")
-        # need to implement 'else', which represents verification fails. 
+        else:
+            # if verification fails, add argument 'fail' and resend email
+            self.redirect("/sendMail?email={email}&fail={fail}".format(
+                    email=email,
+                    fail=True
+                ))
 
 
 class NewPostHandler(tornado.web.RequestHandler):
