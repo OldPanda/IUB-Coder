@@ -35,8 +35,9 @@ class IndexHandler(tornado.web.RequestHandler):
         cookie_id = self.get_secure_cookie("CoderID")
         username = get_name_by_cookie(cookie_id)
         posts = fetch_all_posts()
-        page_num = int(math.ceil(len(posts) / 20.0))  # 20 posts per page
-        if len(posts) and cur_page > page_num:
+        post_num = posts.count()
+        page_num = int(math.ceil(post_num / 20.0))  # 20 posts per page
+        if post_num and cur_page > page_num:
             self.redirect("/error")
             return
         self.render("index.html",
@@ -67,7 +68,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
     def post(self):
         username = self.get_argument("username")
-        error = False
+        error_msg = ""
         # if username is empty
         if username == "":
             error_msg = "用户名不得为空"
@@ -340,6 +341,17 @@ class EditPostHandler(tornado.web.RequestHandler):
         post["last_modified"] = time.time()
         update_post(post)
         self.redirect("/post/{}".format(post["post_num"]))
+
+
+class RemovePostHandler(tornado.web.RequestHandler):
+    '''
+    Remove post
+    '''
+    def get(self, post_num):
+        cookie_id = self.get_secure_cookie("CoderID")
+        username = get_name_by_cookie(cookie_id)
+        remove_post_by_num(int(post_num))
+        self.redirect("/")
 
 
 class NotFoundHandler(tornado.web.RequestHandler):

@@ -9,6 +9,7 @@
                 <a href="/newpost" class="btn btn-success">发 帖</a>
             </div>
             <hr/>
+
             <ul>
                 <!-- 20 posts per page -->
                 {% for post in posts[(int(curPage)-1)*20:int(curPage)*20] %}
@@ -51,6 +52,7 @@
                     {% end %}
                 </ul>
             </div>
+
         </div>
         <div class="col-md-4">
             <div class="well well-lg">

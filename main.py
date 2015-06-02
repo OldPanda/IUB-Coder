@@ -28,6 +28,7 @@ class Application(tornado.web.Application):
             (r"/newpost", NewPostHandler),
             (r"/post/(\w+)", ShowPostHandler),
             (r"/editPost/(\w+)", EditPostHandler),
+            (r"/removePost/(\w+)", RemovePostHandler),
             (r"/error", NotFoundHandler),
             (r".*", NotFoundHandler)
         ]
