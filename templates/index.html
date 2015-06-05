@@ -53,21 +53,29 @@
 
         </div>
         <div class="col-md-4">
-            <div class="well well-lg" style="text-align: center;">
+            <div class="sidebar" style="text-align: center;">
                 {% if cookieName %}
-                    <p><h3>{{ cookieName }}</h3></p>
-                    <div class="col-sm-6">
-                        <p><h4>发帖数</h4></p>
-                        <p><h4>{% raw len(user["posts"]) %}</h4></p>
-                    </div>
-                    <div class="col-sm-6">
-                        <p><h4>评论数</h4></p>
-                        <p><h4>{% raw len(user["comments"]) %}</h4></p>
-                    </div>
+                    <div class="username"><h3>{{ cookieName }}</h3></div>
+                    <table class="userinfo">
+                        <tbody>
+                            <tr>
+                                <td width="50%" align="center" style="border-right: 1px solid rgba(216, 216, 216, 0.4);">
+                                    <span>发帖数</span>
+                                    <div style="height:3px;"></div>
+                                    <span>{% raw len(user["posts"]) %}</span>
+                                </td>
+                                <td width="50%" align="center">
+                                    <span>评论数</span>
+                                    <div style="height:3px;"></div>
+                                    <span>{% raw len(user["comments"]) %}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <hr>
-                    <a href="/newpost" class="btn btn-success">发 帖</a>
+                    <a href="/newpost" class="btn btn-success" style="margin-bottom: 12px; font-family: 'Times New Roman', STKaiti, KaiTi, '楷体', serif;">发 帖</a>
                 {% else %}
-                    <a href="/login" class="btn btn-success">用户登录</a>
+                    <a href="/login" class="btn btn-success" style="margin-top: 20px; margin-bottom: 12px; font-family: 'Times New Roman', STKaiti, KaiTi, '楷体', serif;">用户登录</a>
                 {% end %}
             </div>
         </div>
