@@ -61,8 +61,22 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
             </form>
         </div>
         <div class="col-md-4">
-            <div class="well well-lg">
-                <p>还不知道放啥</p>
+            <div class="well well-lg" style="text-align: center;">
+                {% if cookieName %}
+                    <p><h3>{{ cookieName }}</h3></p>
+                    <div class="col-sm-6">
+                        <p><h4>发帖数</h4></p>
+                        <p><h4>{% raw len(user["posts"]) %}</h4></p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p><h4>评论数</h4></p>
+                        <p><h4>{% raw len(user["comments"]) %}</h4></p>
+                    </div>
+                    <hr>
+                    <a href="/newpost" class="btn btn-success">发 帖</a>
+                {% else %}
+                    <a href="/login" class="btn btn-success">用户登录</a>
+                {% end %}
             </div>
         </div>
     </div>

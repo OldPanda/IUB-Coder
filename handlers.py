@@ -33,7 +33,11 @@ class IndexHandler(tornado.web.RequestHandler):
             self.redirect("/error")
             return
         cookie_id = self.get_secure_cookie("CoderID")
-        username = get_name_by_cookie(cookie_id)
+        user = get_user_by_cookie(cookie_id)
+        if user:
+            cookie_name = user["username"]
+        else:
+            cookie_name = None
         posts = fetch_all_posts()
         post_num = posts.count()
         page_num = int(math.ceil(post_num / 20.0))  # 20 posts per page
@@ -41,7 +45,8 @@ class IndexHandler(tornado.web.RequestHandler):
             self.redirect("/error")
             return
         self.render("index.html",
-                    cookieName=username,
+                    cookieName=cookie_name,
+                    user=user,
                     posts=posts,
                     curPage=cur_page,
                     pageNum=page_num,
@@ -253,14 +258,19 @@ class ShowPostHandler(tornado.web.RequestHandler):
     '''
     def get(self, post_num):
         cookie_id = self.get_secure_cookie("CoderID")
-        username = get_name_by_cookie(cookie_id)
+        user = get_user_by_cookie(cookie_id)
+        if user:
+            cookie_name = user["username"]
+        else:
+            cookie_name = None
         post = fetch_post_by_num(int(post_num))
         if not post:
             self.redirect("/error")
             return
         content = markdown_gen.md_translate(post["content"])
         self.render("post.html",
-                    cookieName=username,
+                    cookieName=cookie_name,
+                    user=user,
                     notice=False,
                     post=post,
                     content=content,

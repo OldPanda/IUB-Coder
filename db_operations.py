@@ -97,6 +97,18 @@ def get_name_by_cookie(cookie):
         return None
 
 
+def get_user_by_cookie(cookie):
+    '''
+    Return user by given cookie
+    '''
+    if cookie:
+        user_db = conn["users"]
+        user = user_db.find_one( {"cookie": cookie} )
+        return user
+    else:
+        return None
+
+
 def get_user_by_username(username):
     '''
     Check if user exists
