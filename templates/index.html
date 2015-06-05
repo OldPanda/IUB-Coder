@@ -14,7 +14,7 @@
                             <a href="/post/{{ post['post_num'] }}" target="_blank"><h4>{{ post["title"] }}</h4></a>
                         </div>
                         <div class="post-info">
-                            <p><i>{% raw time_to_now(post["post_time"]) %}</i> by {{ post["author"] }}  •  最后更新于<i>{% raw time_to_now(post["last_modified"]) %}</i></p>
+                            <p>{% raw time_to_now(post["post_time"]) %} by {{ post["author"] }}  •  最后更新于{% raw time_to_now(post["last_modified"]) %}</p>
                         </div>
                         <hr/>
                     </li>
