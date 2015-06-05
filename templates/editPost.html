@@ -27,7 +27,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
         </div>
     {% end %}
     <div class="col-md-7">
-        <h3>发表新帖</h3>
+        <h3>编辑帖子</h3>
         <hr/>
         <form action="/editPost/{{ post['post_num'] }}" method="post" accept-charset="utf-8">
             {% raw xsrf_form_html() %}
