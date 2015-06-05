@@ -1,0 +1,19 @@
+.post-show {
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+}
+
+.mainpage-item-show {
+    border-spacing: 2px;
+    border-color: grey;
+    width: 100%;
+    text-align: left;
+}
+
+.post-title {
+    font-size: large;
+}
+
+.post-info {
+    color: grey;
+    font-size: 12px;
+}
