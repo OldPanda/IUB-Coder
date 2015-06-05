@@ -45,7 +45,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
                 {% for comment in post["comments"] %}
                     <li>
                         <p>{% raw translate(comment["content"]) %}</p>
-                        <span style="text-align:left;">回复于<i>{% raw time_to_now(comment["post_time"]) %}</i> by {{ comment["author"] }}</span>
+                        <span style="text-align:left;" class="post-info">回复于<i>{% raw time_to_now(comment["post_time"]) %}</i> by {{ comment["author"] }}</span>
                         <hr/>
                     </li>
                 {% end %}
