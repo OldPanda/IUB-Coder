@@ -146,7 +146,9 @@ class LoginHandler(tornado.web.RequestHandler):
         cookie_id = user["cookie"]
         verified = is_verified(cookie_id)  # check if account verified
         # set cookie when logging in, and expires in 15 mins
-        self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
+        # self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
+        # expires after closing the brower
+        self.set_secure_cookie("CoderID", cookie_id, expires_days=None)
         if not verified:
             error_msg = "用户未验证"
             self.render("login.html",
