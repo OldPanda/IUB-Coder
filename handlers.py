@@ -163,6 +163,7 @@ class LogoutHandler(tornado.web.RequestHandler):
     User logout
     '''
     def get(self):
+        # url_path = self.request.uri
         self.clear_cookie("CoderID")
         self.render("logout.html",
                     cookieName=None)
@@ -178,7 +179,8 @@ class SendMailHandler(tornado.web.RequestHandler):
         if user["verified"]:
             cookie_id = user["cookie"]
             # 900 = 60 * 15, 15 minutes
-            self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
+            # self.set_secure_cookie("CoderID", cookie_id, expires=time.time()+900)
+            self.set_secure_cookie("CoderID", cookie_id, expires_days=None)
             self.redirect("/")
         else:
             fail = self.get_argument("fail", False)  # default is False
@@ -204,7 +206,8 @@ class VerifyHandler(tornado.web.RequestHandler):
 
         if verify_res:
             user = get_user_given_email(email)
-            self.set_secure_cookie("CoderID", user["cookie"], expires=time.time()+900)
+            # self.set_secure_cookie("CoderID", user["cookie"], expires=time.time()+900)
+            self.set_secure_cookie("CoderID", cookie_id, expires_days=None)
             self.redirect("/")
         else:
             # if verification fails, add argument 'fail' and resend email
@@ -337,7 +340,6 @@ class EditPostHandler(tornado.web.RequestHandler):
         post = fetch_post_by_num(post_num)
         title = self.get_argument("title")
         content = self.get_argument("content")
-        print "asdf"
         if len(title) == 0:
             # if there's no title
             notice = True

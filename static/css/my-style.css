@@ -33,3 +33,23 @@
     font-size: 15px;
     width: 100%;
 }
+
+.post-intro {
+    background-color: transparent;
+    border-radius: 12px;
+    margin: 2px;
+    border: 1px solid rgb(216, 216, 216);
+}
+
+.post-intro .title {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.post-intro .sep-line {
+    border-bottom: 1px dotted rgb(216, 216, 216);
+}
+
+.post-intro .body {
+    margin: 2px;
+}

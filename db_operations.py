@@ -15,7 +15,6 @@ client = pymongo.MongoClient(MONGODB_URI)  # database connection
 conn = client.get_default_database()
 
 
-
 def check_username(username):
     '''
     Check if the username has been used
