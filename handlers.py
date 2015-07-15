@@ -165,8 +165,7 @@ class LogoutHandler(tornado.web.RequestHandler):
     def get(self):
         # url_path = self.request.uri
         self.clear_cookie("CoderID")
-        self.render("logout.html",
-                    cookieName=None)
+        self.redirect("/")
 
 
 class SendMailHandler(tornado.web.RequestHandler):
