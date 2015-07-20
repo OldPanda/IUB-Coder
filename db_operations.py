@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 
 '''
 client = pymongo.MongoClient('mongodb://localhost:27017/')
-conn = client.test_database
+conn = client.iubcoder
 '''
 MONGODB_URI = "mongodb://OldPanda:19900930@ds031832.mongolab.com:31832/iubcoder"
 client = pymongo.MongoClient(MONGODB_URI)  # database connection
