@@ -33,7 +33,7 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
             </div>
             <span style="text-align:left;" class="post-info">{% raw time_to_now(post["post_time"]) %} by {{ post["author"] }}</span>
             {% if post["author"] == cookieName %}
-                <span class="post-info">  •  <a href="/editPost/{{ post['post_num'] }}" style="text-align:right; color:grey;">编辑</a><!--  •  <a href="/removePost/{{ post['post_num'] }}" style="text-align:right; color:grey;">删除</a>--></span>
+                <span class="post-info">  •  <a href="/editPost/{{ post['post_num'] }}" style="text-align:right; color:grey;">编辑</a></span>
             {% end %}
             <p class="post-show">{% raw content %}</p>
             <!-- Go to www.addthis.com/dashboard to customize your tools -->
