@@ -120,7 +120,7 @@ def get_user_by_username(username):
         return None
 
 
-def get_user_given_email(email):
+def get_user_by_email(email):
     '''
     Return user according to the given email
     '''
@@ -243,7 +243,7 @@ def update_user(user):
 
 def remove_post_by_num(post_num):
     '''
-    Remove post by given post number
+    Remove post by given post number, not in use now
     '''
     post_db = conn["posts"]
     post = post_db.find_one( {"post_num": post_num} )
