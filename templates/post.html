@@ -8,16 +8,6 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-markdown.min.css" />
 {% end %}
 
-{% block js %}
-<!--
-Comes from http://www.codingdrama.com/bootstrap-markdown/
--->
-<script type="text/javascript" src="/static/js/markdown.js"></script>
-<script type="text/javascript" src="/static/js/to-markdown.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
-<script type="text/javascript" src="/static/locale/bootstrap-markdown.zh.js"></script>
-{% end %}
-
 {% block body %}
 <div class="container">
     {% if notice %}
@@ -91,4 +81,14 @@ Comes from http://www.codingdrama.com/bootstrap-markdown/
 </div>
 <!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-554fc616140d2907" async="async"></script>
+{% end %}
+
+{% block js %}
+<!--
+Comes from http://www.codingdrama.com/bootstrap-markdown/
+-->
+<script type="text/javascript" src="/static/js/markdown.js"></script>
+<script type="text/javascript" src="/static/js/to-markdown.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
+<script type="text/javascript" src="/static/locale/bootstrap-markdown.zh.js"></script>
 {% end %}
