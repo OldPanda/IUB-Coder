@@ -4,13 +4,19 @@ import hashlib
 import uuid
 import time
 import random
+import yaml
 from bson.objectid import ObjectId
 
+
 # local database
-client = pymongo.MongoClient('mongodb://localhost:27017/')
-conn = client.iubcoder
+# client = pymongo.MongoClient('mongodb://localhost:27017/')
+# conn = client.iubcoder
 
 # remote database
+with open("config.yml", "r") as f:
+    doc = yaml.load(f)
+    MONGODB_URI = doc["database"]["path"]
+
 MONGODB_URI = "REMOTE_MONGODB_LINK"
 client = pymongo.MongoClient(MONGODB_URI)  # database connection
 conn = client.get_default_database()
