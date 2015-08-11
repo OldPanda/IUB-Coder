@@ -12,6 +12,7 @@ def send_verify_mail(username, email, verify_code):
         doc = yaml.load(f)
         source_email = doc["email"]["source"]
         password = doc["email"]["password"]
+        smtp = doc["email"]["smtp"]
 
     verify_link = "http://iubcoder.com/verify?email=" + \
                   email + \
@@ -35,7 +36,7 @@ def send_verify_mail(username, email, verify_code):
     text = MIMEText(content, _charset="UTF-8")
     msg.attach(text)
 
-    server = smtplib.SMTP("EMAIL SMTP", 587)
+    server = smtplib.SMTP(smtp, 587)
     server.starttls()
     server.login(str(source_email), str(password))
     server.sendmail(source_email, email, msg.as_string())
