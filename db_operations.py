@@ -17,7 +17,6 @@ with open("config.yml", "r") as f:
     doc = yaml.load(f)
     MONGODB_URI = doc["database"]["path"]
 
-MONGODB_URI = "REMOTE_MONGODB_LINK"
 client = pymongo.MongoClient(MONGODB_URI)  # database connection
 conn = client.get_default_database()
 
