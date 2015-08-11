@@ -6,11 +6,12 @@ import time
 import random
 from bson.objectid import ObjectId
 
-'''
+# local database
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 conn = client.iubcoder
-'''
-MONGODB_URI = "mongodb://OldPanda:19900930@ds031832.mongolab.com:31832/iubcoder"
+
+# remote database
+MONGODB_URI = "REMOTE_MONGODB_LINK"
 client = pymongo.MongoClient(MONGODB_URI)  # database connection
 conn = client.get_default_database()
 
@@ -239,17 +240,3 @@ def update_user(user):
     '''
     user_db = conn["users"]
     user_db.save(user)
-
-
-def remove_post_by_num(post_num):
-    '''
-    Remove post by given post number, not in use now
-    '''
-    post_db = conn["posts"]
-    post = post_db.find_one( {"post_num": post_num} )
-    post_author = post["author"]
-    user_db = conn["users"]
-    user = user_db.find_one( {"username": post_author} )
-    user["posts"].remove(post["_id"])
-    update_user(user)
-    post_db.remove( {"post_num": post_num} )
