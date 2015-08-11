@@ -174,7 +174,7 @@ class SendMailHandler(tornado.web.RequestHandler):
     '''
     def get(self):
         email = self.get_argument("email")
-        user = get_user_given_email(email)
+        user = get_user_by_email(email)
         if user["verified"]:
             cookie_id = user["cookie"]
             # 900 = 60 * 15, 15 minutes
@@ -201,12 +201,11 @@ class VerifyHandler(tornado.web.RequestHandler):
         email = self.get_argument("email")
         verify_code = self.get_argument("code")
         verify_res, msg = verify_account(email, verify_code)
-        print verify_res, msg
 
         if verify_res:
-            user = get_user_given_email(email)
+            user = get_user_by_email(email)
             # self.set_secure_cookie("CoderID", user["cookie"], expires=time.time()+900)
-            self.set_secure_cookie("CoderID", cookie_id, expires_days=None)
+            self.set_secure_cookie("CoderID", user["cookie"], expires_days=None)
             self.redirect("/")
         else:
             # if verification fails, add argument 'fail' and resend email

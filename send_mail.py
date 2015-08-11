@@ -4,12 +4,16 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 import time
-
-from EMAIL_CONFIGURE import *  # import email address and password
+import yaml
 
 
 def send_verify_mail(username, email, verify_code):
-    verify_link = "http://iubcoder.herokuapp.com/verify?email=" + \
+    with open("config.yml", "r") as f:
+        doc = yaml.load(f)
+        source_email = doc["email"]["source"]
+        password = doc["email"]["password"]
+
+    verify_link = "http://iubcoder.com/verify?email=" + \
                   email + \
                   "&code=" + \
                   verify_code
